@@ -32,10 +32,10 @@ const customers = [
   {
     id: 2,
     image: "https://placeimg.com/64/64/2",
-    name: "박지수",
+    name: "강하늘",
     birthday: "980414",
     gender: "여자",
-    job: "물리치료사",
+    job: "프로그래머",
   },
   {
     id: 3,
