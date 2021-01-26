@@ -20,6 +20,9 @@ const connection = mysql.createConnection({
 });
 connection.connect();
 
+const multer = require('multer'); //파일 업로드를 위해 모듈 사용
+const upload = multer({dest: './upload'}); //업로드 되는 공간
+
 app.get('/api/customers', (req, res)=>{
   connection.query(
   'SELECT * FROM CUSTOMER',
@@ -28,6 +31,23 @@ app.get('/api/customers', (req, res)=>{
   }
   )
 });
+
+app.use('/image', express.static('./upload')); //업로드 폴더를 같이 공유한다.
+
+app.post('/api/customers', upload.single('image'), (req, res)=>{
+  let sql = 'INSERT INTO CUSTOMER VALUES (null, ?, ?, ?, ?, ?)';
+  let image = '/image/'+req.file.filename;
+  let name = req.body.name;
+  let birthday = req.body.birthday;
+  let gender = req.body.gender;
+  let job = req.body.job;
+  let params = [image, name, birthday, gender, job];
+  connection.query(sql, params,
+    (err, rows, fields)=>{
+    res.send(rows);
+  })
+})
+
 //app.get의 첫 번째 인자는 path, 두 번째 인자는 callback함수로써
 // 화면에 보여줄 때는 res인자를 사용하여 클라이언트한테 보내준다.
 app.listen(port, () => console.log(`Listening on port ${port}`));
